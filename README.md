@@ -1,6 +1,6 @@
 ## **Street fighters**
 ____
-*Online-game, implemented using pure JS, CSS and HTML*
+*Online-game, implemented using TypeScript, CSS and HTML*
 
 ### Rules
 ____
