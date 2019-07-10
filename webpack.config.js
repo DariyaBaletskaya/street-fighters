@@ -1,36 +1,60 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-    entry: './index.js',
-    devServer: {
-        inline: true
-      },
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
-        publicPath: '/dist/'
-    },
-    module: {
-        rules: [
+  entry: "./index.ts",
+  devServer: {
+    inline: true
+  },
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
+    publicPath: "/dist/"
+  },
+  resolve: {
+    extensions: [".ts", ".js"],
+    modules: [path.resolve("./src"), "node_modules"]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: [
           {
-            test: /\.m?js$/,
-            exclude: /(node_modules|bower_components)/,
-            use: [
-              {
-                loader: "babel-loader",
-                options: {
-                  configFile: "./babel.config.js",
-                  cacheDirectory: true
-                }
-              }
-            ]
-          },
-          {
-            test: /\.css$/,
-            use: ["style-loader", "css-loader"]
+            loader: "babel-loader",
+            options: {
+              configFile: "./babel.config.js",
+              cacheDirectory: true
+            }
           }
         ]
       },
-    mode: 'development',
-    devtool: "source-map"
-}
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              transpileOnly: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: "html-loader",
+          options: {
+            attrs: [":data-src"]
+          }
+        }
+      }
+    ]
+  },
+  mode: "development",
+  devtool: "source-map"
+};
