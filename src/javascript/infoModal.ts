@@ -1,79 +1,76 @@
-class InfoModal {
-  fightersMap: Map<String, any>;
+import View from "./view";
 
-  constructor(fighersMap: Map<String, any>) {
-    this.fightersMap = fighersMap;
-  }
+class InfoModal extends View {
+  fighterDetails: any;
+  modal: HTMLElement;
+  nameField: HTMLInputElement;
+  healthField: HTMLInputElement;
+  defenseField: HTMLInputElement;
+  attackField: HTMLInputElement;
+  saveButton: HTMLButtonElement;
+  closeButton: HTMLButtonElement;
 
-  handleFighterInfoModal(fighterId: String) {
-    const fighter = this.fightersMap.get(fighterId);
-    //modal window with fighter's characteristics
-    const modal = document.getElementById("fighterInfo") as HTMLDivElement;
-    this.showElement(modal);
-    //show fighter's info
-    const nameField = document.getElementById(
+  constructor(fighterDetails: any) {
+    super();
+    this.fighterDetails = fighterDetails;
+    this.modal = document.getElementById("fighterInfo") as HTMLDivElement;
+    this.nameField = document.getElementById(
       "fighter-name"
     ) as HTMLInputElement;
-    nameField.value = ` ${fighter.name}`;
-
-    const healthField = document.getElementById(
+    this.healthField = document.getElementById(
       "fighter-health"
     ) as HTMLInputElement;
-    healthField.value = ` ${fighter.health}`;
-
-    const defenseField = document.getElementById(
+    this.defenseField = document.getElementById(
       "fighter-defense"
     ) as HTMLInputElement;
-    defenseField.value = ` ${fighter.defense}`;
-
-    const attackField = document.getElementById(
+    this.attackField = document.getElementById(
       "fighter-attack"
     ) as HTMLInputElement;
-    attackField.value = ` ${fighter.attack}`;
+    this.saveButton = document.getElementById("save-btn") as HTMLButtonElement;
+    this.closeButton = document.getElementById(
+      "close-btn"
+    ) as HTMLButtonElement;
+  }
 
-    //save fighter's info
-    const saveButton = document.getElementById("save-btn") as HTMLButtonElement;
-    saveButton.addEventListener(
-      "click",
-      () => {
-        fighter.health = healthField.value;
-        fighter.defense = defenseField.value;
-        fighter.attackField = attackField.value;
-        this.fightersMap.set(fighter._id, fighter);
-        this.hideElement(modal);
-      },
-      false
-    );
+  handleFighterInfoModal(): any {
+    this.showElement(this.modal);
 
-    const closeButton = document.getElementById("close-btn");
-    closeButton.addEventListener(
-      "click",
-      () => {
-        this.hideElement(modal);
-      },
-      false
-    );
+    this._setValue(this.nameField, this.fighterDetails.name);
+    this._setValue(this.healthField, this.fighterDetails.health);
+    this._setValue(this.defenseField, this.fighterDetails.defense);
+    this._setValue(this.attackField, this.fighterDetails.attack);
+
+    this._setSaveBtn(this.saveButton);
+    this._setCloseBtn(this.closeButton);
+    return this.fighterDetails;
   }
 
   //manipulations with ui-elements
-  showElement(element: HTMLElement): void {
-    element.style.visibility = "visible";
+  private _setValue(element: HTMLInputElement, value: string): void {
+    element.value = value;
   }
 
-  hideElement(element: HTMLElement): void {
-    element.style.visibility = "hidden";
+  private _setSaveBtn(button: HTMLButtonElement): void {
+    button.addEventListener(
+      "click",
+      () => {
+        this.fighterDetails.health = Number(this.healthField.value);
+        this.fighterDetails.defense = Number(this.defenseField.value);
+        this.fighterDetails.attack = Number(this.attackField.value);
+        this.hideElement(this.modal);
+      },
+      false
+    );
   }
 
-  disableElement(element: HTMLElement): void {
-    element.style.display = "none";
-  }
-
-  animateElement(element: HTMLElement): void {
-    element.classList.add("jump-animated");
-  }
-
-  removeAnimation(element: HTMLElement): void {
-    element.classList.remove("jump-animated");
+  private _setCloseBtn(button: HTMLButtonElement): void {
+    button.addEventListener(
+      "click",
+      () => {
+        this.hideElement(this.modal);
+      },
+      false
+    );
   }
 }
 export default InfoModal;

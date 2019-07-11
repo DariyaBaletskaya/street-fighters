@@ -1,8 +1,8 @@
 import { IFighter } from "./IFighter";
 
 class Fighter implements IFighter {
-  id: number;
-  name: string;
+  readonly id: number;
+  readonly name: string;
   health: number;
   attack: number;
   defense: number;
