@@ -10,17 +10,16 @@ class FightersView extends View {
   modal: HTMLElement;
   fighters: HTMLElement[];
   choosenFighters: any;
-  checkboxes: HTMLInputElement[];
   startGameBtn: HTMLButtonElement;
 
-  handleClick: (fighter: any) => void;
+  handleClick: (event: Event, fighterDetails: any) => Promise<void>;
 
   constructor(fighters: JSON[]) {
     super();
     this.handleClick = this.handleFighterClick.bind(this);
     this.createFighters(fighters);
 
-    this.modal = document.getElementById("fighterInfo");
+    this.modal = document.getElementById("fighterInfo") as HTMLElement;
     this.fighters = [
       ...document.getElementsByClassName("fighter")
     ] as HTMLElement[];
@@ -46,7 +45,7 @@ class FightersView extends View {
     this.element.append(...fighterElements);
   }
 
-  async handleFighterClick(event: Event, fighterDetails: any) {
+  async handleFighterClick(event: Event, fighterDetails: any): Promise<void> {
     try {
       if (!this.fightersDetailsMap.has(fighterDetails._id)) {
         fighterDetails = await fighterService.getFighterDetails(
@@ -56,72 +55,67 @@ class FightersView extends View {
         this.fightersDetailsMap.set(fighterDetails._id, fighterDetails);
       }
 
-      let updatedFighterDetails = new InfoModal(
+      let updatedFighter = new InfoModal().handleFighterInfoModal(
         fighterDetails
-      ).handleFighterInfoModal();
-      this.fightersDetailsMap.set(fighterDetails._id, updatedFighterDetails);
+      );
       this.setPlayers();
+      this.fightersDetailsMap.set(fighterDetails._id, updatedFighter);
     } catch (error) {
       console.warn(error);
     }
   }
 
   setPlayers(): void {
-    this.checkboxes = [
+    let checkboxes = [
       ...document.getElementsByClassName("fighter-checkbox")
     ] as HTMLInputElement[];
 
-    this.checkboxes.map(element => {
+    [...checkboxes].map(element => {
       element.addEventListener("click", () => {
         this.choosenFighters = document.querySelectorAll(
           ".fighter-checkbox:checked"
         );
 
         if (this.choosenFighters.length == this.LIMIT_PLAYERS) {
-          document
-            .getElementById("start-game-btn")
-            .addEventListener("click", () => {
-              //hide settings block
-              this.hideElement(document.getElementById("game-settings"));
-              //hide checkboxes
-              this.checkboxes.map(e => this.hideElement(e));
-              //hide extra players
-              this.fighters
-                .filter(
-                  e =>
-                    e.id != this.choosenFighters[0].defaultValue &&
-                    e.id != this.choosenFighters[1].defaultValue
-                )
-                .map(e => {
-                  this.hideElement(e);
-                });
-              //disable modal with fighter's info
-              this.disableElement(this.modal);
+          const startBtn = document.getElementById(
+            "start-game-btn"
+          ) as HTMLButtonElement;
+          startBtn.addEventListener("click", () => {
+            //hide settings block
+            this.hideElement(document.getElementById(
+              "game-settings"
+            ) as HTMLElement);
+            //hide checkboxes
+            [...checkboxes].map(e => this.hideElement(e));
 
-              let [firstFighter, secondFighter] = [...this.choosenFighters].map(
-                e => {
-                  return this.fightersDetailsMap.get(e.defaultValue);
-                }
-              );
+            //disable modal with fighter's info
+            this.disableElement(this.modal);
 
-              firstFighter = new Fighter(
-                firstFighter.id,
-                firstFighter.name,
-                firstFighter.health,
-                firstFighter.attack,
-                firstFighter.defense
-              );
+            let [firstFighter, secondFighter] = [...this.choosenFighters].map(
+              e => {
+                return this.fightersDetailsMap.get(e.defaultValue);
+              }
+            );
 
-              secondFighter = new Fighter(
-                secondFighter.id,
-                secondFighter.name,
-                secondFighter.health,
-                secondFighter.attack,
-                secondFighter.defense
-              );
-              //start fight
-              new Fight().startFight([firstFighter, secondFighter]);
-            });
+            firstFighter = new Fighter(
+              firstFighter.id,
+              firstFighter.name,
+              firstFighter.health,
+              firstFighter.attack,
+              firstFighter.defense
+            );
+
+            secondFighter = new Fighter(
+              secondFighter.id,
+              secondFighter.name,
+              secondFighter.health,
+              secondFighter.attack,
+              secondFighter.defense
+            );
+
+            //start fight
+            new Fight().startFight([firstFighter, secondFighter]);
+          });
         } else if (this.choosenFighters.length > this.LIMIT_PLAYERS) {
           element.checked = false;
           alert("You can choose only two fighters!");

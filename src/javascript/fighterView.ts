@@ -1,8 +1,6 @@
 import View from "./view";
 
 class FighterView extends View {
-  element: HTMLElement;
-
   constructor(fighter: any, handleClick: (event: Event, fighter: any) => void) {
     super();
 
@@ -12,12 +10,12 @@ class FighterView extends View {
   createFighter(
     fighter: any,
     handleClick: (event: Event, fighter: any) => void
-  ) {
+  ): void {
     const { name, source } = fighter;
-    const nameElement = this.createName(name);
-    const imageElement = this.createImage(source, fighter._id);
-    const checkboxElement = this.createCheckbox(fighter._id);
-    const checkboxWrapper = super.createElement({
+    const nameElement: HTMLElement = this.createName(name);
+    const imageElement: HTMLElement = this.createImage(source, fighter._id);
+    const checkboxElement: HTMLElement = this.createCheckbox(fighter._id);
+    const checkboxWrapper: HTMLElement = super.createElement({
       tagName: "div",
       className: "wrapper"
     });
@@ -38,14 +36,14 @@ class FighterView extends View {
   }
 
   //checkbox for player choice
-  createCheckbox(id: number) {
-    const attributes = {
+  createCheckbox(id: number): HTMLElement {
+    const attributes: Object = {
       type: "checkbox",
       name: "fighter",
       value: id
     };
 
-    const checkboxElement = super.createElement({
+    const checkboxElement: HTMLElement = super.createElement({
       tagName: "input",
       className: "fighter-checkbox",
       attributes
@@ -54,9 +52,9 @@ class FighterView extends View {
     return checkboxElement;
   }
 
-  createName(name: string) {
-    const attributes = { for: "fighter" };
-    const nameElement = super.createElement({
+  createName(name: string): HTMLElement {
+    const attributes: Object = { for: "fighter" };
+    const nameElement: HTMLElement = super.createElement({
       tagName: "lable",
       className: "name",
       attributes
@@ -66,14 +64,14 @@ class FighterView extends View {
     return nameElement;
   }
 
-  createImage(source: string, id: number) {
-    let className = "fighter-image";
+  createImage(source: string, id: number): HTMLElement {
+    let className: string = "fighter-image";
     // turn players face-to-face
     if (id > 3) {
       className = "fighter-image-right";
     }
-    const attributes = { src: source };
-    const imgElement = super.createElement({
+    const attributes: Object = { src: source };
+    const imgElement: HTMLElement = super.createElement({
       tagName: "img",
       className: className,
       attributes

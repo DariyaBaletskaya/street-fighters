@@ -3,7 +3,7 @@ const API_URL: string =
 
 async function callApi(endpoind: string, method: string) {
   const url: string = API_URL + endpoind;
-  const options = {
+  const options: Object = {
     method
   };
 

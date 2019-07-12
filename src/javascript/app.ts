@@ -1,5 +1,4 @@
 import FightersView from "./fightersView";
-import Fight from "./fight";
 import { fighterService } from "./services/fightersService";
 
 class App {
@@ -7,10 +6,12 @@ class App {
     this.startApp();
   }
 
-  static rootElement = document.getElementById("root");
-  static loadingElement = document.getElementById("loading-overlay");
+  static rootElement = document.getElementById("root") as HTMLElement;
+  static loadingElement = document.getElementById(
+    "loading-overlay"
+  ) as HTMLElement;
 
-  async startApp() {
+  async startApp(): Promise<void> {
     try {
       App.loadingElement.style.visibility = "visible";
 

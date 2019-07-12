@@ -10,9 +10,8 @@ class InfoModal extends View {
   saveButton: HTMLButtonElement;
   closeButton: HTMLButtonElement;
 
-  constructor(fighterDetails: any) {
+  constructor() {
     super();
-    this.fighterDetails = fighterDetails;
     this.modal = document.getElementById("fighterInfo") as HTMLDivElement;
     this.nameField = document.getElementById(
       "fighter-name"
@@ -32,31 +31,33 @@ class InfoModal extends View {
     ) as HTMLButtonElement;
   }
 
-  handleFighterInfoModal(): any {
+  handleFighterInfoModal(fighterDetails: any): JSON {
     this.showElement(this.modal);
 
-    this._setValue(this.nameField, this.fighterDetails.name);
-    this._setValue(this.healthField, this.fighterDetails.health);
-    this._setValue(this.defenseField, this.fighterDetails.defense);
-    this._setValue(this.attackField, this.fighterDetails.attack);
+    this._setValue(this.nameField, fighterDetails.name);
+    this._setValue(this.healthField, fighterDetails.health.toString());
+    this._setValue(this.defenseField, fighterDetails.defense.toString());
+    this._setValue(this.attackField, fighterDetails.attack.toString());
 
-    this._setSaveBtn(this.saveButton);
     this._setCloseBtn(this.closeButton);
-    return this.fighterDetails;
+    this._setSaveBtn(this.saveButton, fighterDetails);
+
+    return fighterDetails;
   }
 
   //manipulations with ui-elements
-  private _setValue(element: HTMLInputElement, value: string): void {
-    element.value = value;
+  private _setValue(element: HTMLInputElement, value: any): void {
+    element.value = ` ${value}`;
   }
 
-  private _setSaveBtn(button: HTMLButtonElement): void {
+  private _setSaveBtn(button: HTMLButtonElement, fighterDetails: any): void {
     button.addEventListener(
       "click",
       () => {
-        this.fighterDetails.health = Number(this.healthField.value);
-        this.fighterDetails.defense = Number(this.defenseField.value);
-        this.fighterDetails.attack = Number(this.attackField.value);
+        fighterDetails.health = Number(this.healthField.value);
+        fighterDetails.defense = Number(this.defenseField.value);
+        fighterDetails.attack = Number(this.attackField.value);
+
         this.hideElement(this.modal);
       },
       false
